@@ -31,6 +31,10 @@ hard_paragraph = '"Starting a ___1___ data entry business is easier than trying 
 
 hard_answers = ["complete","offer","apply","remember","provide","wide"]
 
+MAX_ATTEMPTS = 5
+LAST_ATTEMPT = 1
+NO_ATTEMPTS_LEFT = 0
+
 # The answer for ___1___ is 'function'. Can you figure out the others?
 
 # We've also given you a file called fill-in-the-blanks.pyc which is a working version of the project.
@@ -45,29 +49,72 @@ hard_answers = ["complete","offer","apply","remember","provide","wide"]
 
 # If you need help, you can sign up for a 1 on 1 coaching appointment: https://calendly.com/ipnd-1-1/20min/
 
-# Run the easy version of the quiz
+"""
+	Behavior: This function runs the easy version of the quiz
+	Inputs: Takes no inputs
+	Outputs: This function returns no value
+
+"""
 def run_easy_quiz():
 	print "You've chosen easy!\n\nYou will get 5 guesses per problem\n\n"
 	run_quiz(easy_paragraph,easy_answers)
 
-# Run the medium version of the quiz
+"""
+	Behavior: This function runs the medium version of the quiz
+	Inputs: Takes no inputs
+	Outputs: This function returns no value
+
+"""
 def run_medium_quiz():
 	print "You've chosen medium!\n\nYou will get 5 guesses per problem\n\n"
 	run_quiz(medium_paragraph,medium_answers)
 
 
-# Run the hard version of the quiz
+"""
+	Behavior: This function runs the hard version of the quiz
+	Inputs: Takes no inputs
+	Outputs: This function returns no value
+
+"""
 def run_hard_quiz():
 	print "You've chosen hard!\n\nYou will get 5 guesses per problem\n\n"
-	run_quiz(easy_paragraph,easy_answers)
+	run_quiz(hard_paragraph,hard_answers)
 
-# Update paragraph text when given the correct answer
+"""
+	Behavior: This function replaces the blank in the paragraph with the correct answer
+	Inputs: The current paragraph text, the correct answer, the blank number that the answer is the replace
+	Outputs: Updated paragraph text with the blank filled.
+
+"""
 def update_paragraph_text(paragraph_text,answer,position):
 	token_to_replace = "___"+str(position)+"___"
 
 	return paragraph_text.replace(token_to_replace,answer)
 
-# Wrapper to run any quiz
+"""
+	Behavior: This function runs a quiz given the paragraph and corresponding answers
+	Inputs: Paragraph text with blanks, answers to the paragraph texts
+	Outputs: No output
+
+"""
+def check_guesses_left(guesses):
+	guesses-=1
+	if guesses ==NO_ATTEMPTS_LEFT:
+		print "You've failed too many straight guesses! Game Over!"
+		return guesses
+	if guesses ==LAST_ATTEMPT:
+		print "That isn't the correct answer! Let's try again: you have 1 try left! Make it count!\n\n"
+	else:
+		print "That isn't the correct answer! Let's try again: you have " + str(guesses)+" trys left!\n\n"	
+
+	return guesses
+
+"""
+	Behavior: This function runs a quiz given the paragraph and corresponding answers
+	Inputs: Paragraph text with blanks, answers to the paragraph texts
+	Outputs: No output
+
+"""
 def run_quiz(paragraph_text,paragraph_answers):
 	
 	guesses=5
@@ -79,24 +126,24 @@ def run_quiz(paragraph_text,paragraph_answers):
 			user_answer = raw_input("\n\nWhat should be substituted in for __"+str(paragraph_answers.index(answer)+1)+"__? ")
 			if user_answer == answer:
 				paragraph_text=update_paragraph_text(paragraph_text,answer,paragraph_answers.index(answer)+1)
-				guesses = 5
+				guesses = MAX_ATTEMPTS
 				print "\nCorrect!\n\n"
 				break
 			else:
-				guesses-=1
-				if guesses ==0:
-					print "You've failed too many straight guesses! Game Over!"
+				guesses = check_guesses_left(guesses)
+				if guesses == NO_ATTEMPTS_LEFT:
 					return
-				if guesses ==1:
-					print "That isn't the correct answer! Let's try again: you have 1 try left! Make it count!\n\n"
-				else:
-					print "That isn't the correct answer! Let's try again: you have " + str(guesses)+" trys left!\n\n"
 
 	print paragraph_text
 
 	print "\n\nYou Won!"
 
-#initialize the quiz selection loop
+"""
+	Behavior: Initializes the quiz selection loop
+	Inputs: Takes no inputs
+	Outputs: Gives no outputs
+
+"""
 def init_quiz():
 	user_choice = raw_input("Please select a game difficulty by typing it in! \nPossible choices include easy, medium and hard.\n")
 
