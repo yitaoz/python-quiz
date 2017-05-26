@@ -117,7 +117,7 @@ def check_guesses_left(guesses):
 """
 def run_quiz(paragraph_text,paragraph_answers):
 	
-	guesses=5
+	guesses=MAX_ATTEMPTS
 
 	for answer in paragraph_answers:
 		while True:
